@@ -1,14 +1,23 @@
-const http = require('node:http');
+//express
+const express = require('express')
+const app = express()
+const router = express.Router()
+const path = require('path');
 
-const hostname = '127.0.0.1';
-const port = 3000;
+// will handle any request that ends in /
+// depends on where the router is "use()'d"
+router.get('/', (req, res) => {
+    res.send('hello world')
+})
 
-const server = http.createServer((req, res) => {
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'text/plain');
-  res.end('Hello, World!\n');
+// Serve static files from the 'views' directory
+app.use(express.static(path.join(__dirname, 'views')));
+app.use('/js', express.static(path.join(__dirname, 'js')));
+router.get('/docs', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
 
-server.listen(port, hostname, () => {
-  console.log(`Server running at http://${hostname}:${port}/`);
-});
+
+const PORT = process.env.PORT || 3000;
+app.use(router)
+app.listen(PORT,3000)
